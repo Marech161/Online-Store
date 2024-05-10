@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+</head>
+<body>
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll('#productForm').forEach(form => {
+      form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const productId = this.querySelector('p').textContent.split(': ')[1];
+
+        fetch('/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ productId: productId })
+        })
+          .then(response => {
+            if (response.status === 200) {
+              window.location.href = '/auth/registration';
+            }
+          });
+      });
+    });
+  });
+</script>
+<h2><a href="/cart">Корзина</a> </h2>
+<h3><a href="/auth/login">Вход</a> </h3>
+<h3><a href="/auth/registration">Регистрация</a> </h3>
+<h1>Наши продукты</h1>
+<div id="products-container"></div>
+    <ul>
+        {% for product in products %}
+            <li><p>Название: {{ product.dataValues.name }}</p>
+            <li><p>Цена: {{ product.dataValues.price }}</p></li>
+        <form id="productForm" method="post">
+            <li>
+                <p>Артикул: {{ product.dataValues.id }}</p>
+                <button type="submit">Добавить в корзину</button>
+            </li>
+        </form>
+        {% endfor %}
+    </ul>
+</body>
+</html>
